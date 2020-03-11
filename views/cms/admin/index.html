@@ -1,0 +1,166 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd"></div>
+    <div id="bd">
+        <div id="main">
+
+            <div class="table">
+                <div class="opt ue-clear">
+                    <span class="optarea">
+                        <a href="{{ urlfor "AdminController.Add" }}" class="add">
+                            <i class="icon"></i>
+                            <span class="text">添加</span>
+                        </a>
+                        <a href="javascript:;" class="delete">
+                            <i class="icon"></i>
+                            <span class="text">删除</span>
+                        </a>
+                    </span>
+                </div>
+
+                <input type="hidden" id="indexP" value="{{ .p }}"/>
+
+                <div class="grid"></div>
+
+                <div class="pagination"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script type="text/javascript">
+    // 分页参数
+    var indexP = $("#indexP").val()
+    var p = indexP == "" ? 1 : indexP
+    var view_rows = 12
+
+    var head = [{
+        label: 'ID',
+        width: 50,
+        name: 'id'
+    }, {
+        label: '账户名称',
+        width: 200,
+    }, {
+        label: '角色',
+        width: 200
+    }, {
+        label: '创建时间',
+        width: 150
+    }, {
+        label: '更新时间',
+        width: 150
+    }];
+
+    var tbody = []
+
+    $('.grid').Grid({
+        thead: head,
+        tbody: null,
+        height: 450,
+        checkbox: {
+            single: true
+        },
+        operator: {
+            type: "normal",
+            width: 150
+        },
+        sortCallBack: function (name, index, type) {
+            alert(name + "," + index + ',' + type);
+        }
+    });
+    $('.grid').Grid('addLoading');
+
+    function pushTbody(list) {
+        tbody = []
+        var oper = [{
+            label: '删除', onclick: function (e, i) {
+                var id = $(e).find(".__data tr").eq(i).find('td[name="id"]').text();
+                if (!confirm("确定删除吗?")) {
+                    return false
+                }
+                $.post("{{ urlfor "AdminController.Del" }}", {"id": id}, function (resultData) {
+                    if (resultData.Code == 200) {
+                        $(e).find(".__bodyfinal tr").eq(i).remove();
+                        $(e).find(".__data tr").eq(i).remove();
+                    } else {
+                        alert(resultData.Msg)
+                    }
+                }, "json")
+            }
+        }, {
+            label: '编辑', onclick: function (e, i) {
+                var id = $(e).find(".__data tr").eq(i).find('td[name="id"]').text();
+                indexP = $("#indexP").val()
+                window.location.href = "{{ urlfor "AdminController.Edit" }}" + "?id=" + id + "&p=" + indexP
+            }
+        }]
+        for (var i = 0; i < list.length; i++) {
+            tbody.push([list[i].Id, list[i].Username, list[i].RoleName,list[i].CreateTime,list[i].UpdateTime, oper])
+        }
+        $('.grid').Grid('setData', tbody, head);
+    }
+
+    var d = getData(view_rows, p)
+    pushTbody(d.list)
+
+    $('.pagination').pagination(d.total_rows, {
+        items_per_page: view_rows,
+        current_page: p - 1,
+        callback: function (page) {
+            var d = getData(view_rows, page + 1)
+            $("#indexP").val(d.now_page)
+            pushTbody(d.list)
+        },
+        display_msg: false
+    });
+
+    function getData(rows, page) {
+        var data = {}
+        $.ajax({
+            url: '{{ urlfor "AdminController.GetData" }}',
+            data: {
+                view_rows: rows,
+                p: page
+            },
+            type: "POST",
+            async: false,
+            timeout: 1500,
+            dataType: "json",
+            success: function (ret) {
+                if (ret.Code == 200) {
+                    data = ret.Data
+                }
+            },
+            error: function () {
+                console.log("fail")
+            }
+        })
+        return data
+    }
+
+    //批量删除
+    $(".delete").on("click", function () {
+        if (!confirm("确认删除吗?")) {
+            return false
+        }
+        var idArray = new Array()
+        $.each($(".__bodyfront").find("input[type='checkbox']"), function (i, e) {
+            if (e.checked) {
+                var id = $(document).find(".__data tr").eq(i).find('td[name="id"]').text();
+                idArray.push(id)
+            }
+        })
+        var idString = idArray.join(",")
+        //console.log(idString)
+        $.post("/cms/admin/batch_del", {idString: idString}, function (ret) {
+            if (ret.Code = 200) {
+                alert(ret.Msg)
+                history.go(0)
+            } else {
+                alert(ret.Msg);
+            }
+        }, "json")
+    })
+</script>

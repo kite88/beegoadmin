@@ -14,7 +14,7 @@
 .ui-table-panel{overflow:hidden;z-index:1;position:relative;width:100%;margin-bottom:3px;padding-bottom:1px;}
 
 /*** 表格主要区域内容样式 - 表格头 ***/
-.ui-table-thead{position:relative;height:39px;/*border:1px solid #E1E6EA;*/border-right:0;border-left:0;/*background:#EDF4F9;*/ background:url(../img/skin_/thbg.png);}
+.ui-table-thead{position:relative;height:39px;/*border:1px solid #E1E6EA;border-right:0;border-left:0;/*background:#EDF4F9;*/ background:url(../img/skin_/thbg.png);}
 .ui-table-main{z-index:3;position:absolute;left:0;top:0;right:0;overflow:hidden;}
 .ui-table th{height:40px;padding-left:5px;border-left:1px solid #D4DFE7;border-right:0;/*background:#EDF4F9;*/ background:url(../img/skin_/thbg.png);}
 .ui-table th:first-child{border-left:0;}

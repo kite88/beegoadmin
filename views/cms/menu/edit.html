@@ -1,0 +1,182 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd">
+    </div>
+    <div id="bd">
+        <div id="main">
+            <a href="list.html">返回</a>
+            <h2 class="subfild">
+                <span>编辑信息</span>
+            </h2>
+            <div class="subfild-content base-info">
+
+                <div class="kv-item ue-clear">
+                    <label><span class="impInfo">*</span>名称</label>
+                    <div class="kv-item-content">
+                        <input name="Name" type="text" placeholder="名称"/>
+                    </div>
+                    <span class="kv-item-tip"></span>
+                </div>
+                <div class="kv-item ue-clear">
+                    <label><span class="impInfo"></span>路由</label>
+                    <div class="kv-item-content">
+                        <input name="Router" type="text" placeholder="路由"/>
+                    </div>
+                    <span class="kv-item-tip"></span>
+                </div>
+
+                <div class="kv-item ue-clear">
+                    <label>所在父级</label>
+                    <div class="kv-item-content">
+                        <select name="Pid" id="parentTop">
+
+                        </select>
+                    </div>
+                    <span class="kv-item-tip success"></span>
+                </div>
+
+                <input id="Id" type="hidden" value=""/>
+                <input id="Pid" type="hidden" value=""/>
+
+            </div>
+
+            <div class="buttons">
+                <input class="button" type="button" value="确认修改"/>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script>
+    //提交
+    $(".button").on("click", function () {
+        var id = $("#Id").val()
+        var name = $("input[name='Name']").val()
+        var router = $("input[name='Router']").val().trim()
+        var pid = $("#parentTop").val()
+        if (name == "") {
+            alert("名称不能为空")
+            return false
+        }
+        var data = {
+            id: id,
+            name: name,
+            router: router,
+            pid: pid
+        }
+        $.post("{{ urlfor "MenuController.EditMenu"}}", data, function (ret) {
+            if (ret.Code == 200) {
+                window.location.href = "list.html"
+            } else {
+                alert(ret.Msg)
+            }
+        }, "json")
+
+    })
+
+    //获取菜单信息
+    $.get("{{ urlfor  "MenuController.GetMenu"}}", {id: "{{ .Id }}"}, function (ret) {
+        if (ret.Code == 200) {
+            $("#Id").val(ret.Data.Id)
+            $("#Pid").val(ret.Data.Pid)
+            $("input[name='Name']").val(ret.Data.Name)
+            $("input[name='Router']").val(ret.Data.Router)
+        } else {
+            alert(ret.Msg)
+            window.location.href = "list.html"
+        }
+    }, "json")
+    $.get("{{ urlfor  "NavController.Menu"}}", {}, function (resultData) {
+        if (resultData.Code == 200) {
+            var html = "";
+            //获取格式化后的数据
+            var ret = FormatMenuData(resultData.Data)
+
+            var id = $("#Id").val()
+            //获取当前等级
+            var CurrentLevel = FindCurrentLevel(id,ret)
+
+            for (var i = 0; i < ret.length; i++) {
+                if (ret[i].Level < 3) {
+                    var htmllevel = ""
+                    if (ret[i].Level > 1) {
+                        var htmlnbsp = ""
+                        for (var u = 0; u < Math.pow(2, ret[i].Level); u++) {
+                            htmlnbsp += "&nbsp;"
+                        }
+                        htmllevel = htmlnbsp + "|__ "
+                    }
+                    var pid = $("#Pid").val()
+                    if (pid == ret[i].Id) {
+                        selectedHtml = 'selected="selected"'
+                    } else {
+                        selectedHtml = ''
+                    }
+
+                    if (CurrentLevel <= ret[i].Level) {
+                        disabledHtml = 'disabled="disabled"'
+                    } else {
+                        disabledHtml = ''
+                    }
+
+                    html += '<option ' + disabledHtml + ' ' + selectedHtml + ' value="' + ret[i].Id + '">' + htmllevel + ret[i].Name + '</option>'
+
+                }
+            }
+            $("#parentTop").html('<option value="0"> / 根目录</option>' + html)
+        }
+    }, "json")
+
+    //查询当前等级
+    function FindCurrentLevel(id, data) {
+        var CurrentLevel = null
+        for (var i = 0; i < data.length; i++){
+            if (id == data[i].Id) {
+                CurrentLevel = data[i].Level
+                return CurrentLevel
+            }
+        }
+        return CurrentLevel
+    }
+
+    function FormatMenuData(data) {
+        var NData = []
+        if (data !== null) {
+            var level = 1
+            for (var index = 0; index < data.length; index++) {
+                var Adata = {
+                    "Id": data[index].Id,
+                    "Name": data[index].Name,
+                    "Router": data[index].Router,
+                    "Level": level
+                }
+                NData.push(Adata)
+                var dataOne = data[index].Children
+                if (dataOne !== null) {
+                    for (var indexOne = 0; indexOne < dataOne.length; indexOne++) {
+                        var Bdata = {
+                            "Id": dataOne[indexOne].Id,
+                            "Name": dataOne[indexOne].Name,
+                            "Router": dataOne[indexOne].Router,
+                            "Level": level + 1
+                        }
+                        NData.push(Bdata)
+                        var dataTwo = dataOne[indexOne].Children
+                        if (dataTwo !== null) {
+                            for (var indexTwo = 0; indexTwo < dataTwo.length; indexTwo++) {
+                                var Cdata = {
+                                    "Id": dataTwo[indexTwo].Id,
+                                    "Name": dataTwo[indexTwo].Name,
+                                    "Router": dataTwo[indexTwo].Router,
+                                    "Level": level + 2
+                                }
+                                NData.push(Cdata)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return NData
+    }
+</script>

@@ -1,0 +1,43 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd">
+    </div>
+    <div id="bd">
+        <div id="main">
+            <a href="index.html">返回</a>
+            <h2 class="subfild">
+                <span>添加信息</span>
+            </h2>
+            <div class="subfild-content base-info">
+                <div class="kv-item ue-clear">
+                    <label><span class="impInfo">*</span>角色名称</label>
+                    <div class="kv-item-content">
+                        <input name="Name" type="text" placeholder="名称" autocomplete="off"/>
+                    </div>
+                    <span class="kv-item-tip"></span>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <input class="button" type="button" value="确认添加"/>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script>
+    $(".button").on("click", function () {
+        var name = $("input[name='Name']").val().trim()
+        if (name == "") {
+            alert("请输入角色名称")
+            return false
+        }
+        $.post("{{ urlfor "RoleController.Add" }}", {name: name}, function (ret) {
+            if (ret.Code == 200) {
+                location.href = "index.html"
+            } else {
+                alert(ret.Msg)
+            }
+        }, "json")
+    })
+</script>

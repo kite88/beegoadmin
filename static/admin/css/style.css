@@ -13,7 +13,7 @@ html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pr
 body {line-height:1.5;}
 table {border-collapse: collapse;border-spacing:0;}
 caption, th, td ,b,strong{text-align:left;font-weight:normal;}
-table, td, th {vertical-align:middle;}	
+table, td, th {vertical-align:middle;}
 blockquote:before, blockquote:after, q:before, q:after {content:"";}
 blockquote, q {quotes:"" "";}
 a img {border:none;}
@@ -50,7 +50,7 @@ a:hover{color:#267A01;text-decoration:underline;}
   ===================================*/
 .pagination{font-size:14px;}
 .pagination a {text-decoration: none;}
-.pagination .pxofy{float:left;margin-left: 5px;height:25px;*padding-top:1px;}	
+.pagination .pxofy{float:left;margin-left: 5px;height:25px;*padding-top:1px;}
 .pagination a, .pagination span {display: block;float: left;height:32px;line-height:32px;padding:0 10px;font-family:Arial, Helvetica, sans-serif !important;}
 .pagination .current {cursor:default;border: solid 1px ;}
 .pagination .prev, .pagination .next{/*line-height:22px;*/}
@@ -107,7 +107,7 @@ textarea{height:80px; background:none;}
 .kv-item-tip.warn{color:#f0ad4e;}
 /*.kv-item-tip{margin-left:397px;*margin-left:0;}*/
 .kv-item-tip .ue-icon{margin:2px 8px 0 5px;*margin-left:2px;}
-.kv-item-tip .ue-state-highlight .tipText{color:#FAAB00;}   
+.kv-item-tip .ue-state-highlight .tipText{color:#FAAB00;}
 
 .kv-item .file{position:relative;line-height:30px;}
 .kv-item .file input[type=file]{position:absolute;right:0px;z-index:1;width:72px;height:35px; opacity:0;filter:alpha(opacity=0);cursor:pointer;}
@@ -142,3 +142,29 @@ textarea{height:80px; background:none;}
 .opt-panel .opt-panel-bc{position:absolute;left:10px;right:10px;bottom:0;height:15px; background:url(../img/skin_/opt/dcenter.png);}
 .opt-panel .opt-panel-br{position:absolute;right:0;bottom:0;width:10px;height:15px; background:url(../img/skin_/opt/dright.png);}
 .opt-panel .opt-panel-arrow{position:absolute;width:14px;;height:7px;top:-5px;left:30px; background:url(../img/skin_/opt/xljt.png);}
+
+ /*选择框*/
+.kite_select{
+	padding: 5px;
+	border: 1px solid #c5c5c5;
+}
+.kite_select input[type=text]{
+	width: 60%;
+}
+.kite_select ul{
+	width: 385px;
+	height: 200px;
+	overflow: auto;
+	padding-top: 10px;
+}
+.kite_select ul li{
+	height: 30px;
+	width: 50%;
+	float: left;
+	line-height: 30px;
+}
+.kite_select ul li input[type=checkbox],input[type=radio]{
+	float: left;
+	width: 16px;
+	height: 16px;
+}

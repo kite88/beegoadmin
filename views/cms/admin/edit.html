@@ -1,0 +1,112 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd">
+    </div>
+    <div id="bd">
+        <div id="main">
+            <a href="index.html?p={{ .p }}">返回</a>
+            <h2 class="subfild">
+                <span>修改信息</span>
+            </h2>
+            <div class="subfild-content base-info">
+                <div class="kv-item ue-clear">
+                    <label><span class="impInfo">*</span>名称</label>
+                    <div class="kv-item-content">
+                        <input name="Username" type="text" placeholder="名称" autocomplete="off"/>
+                    </div>
+                    <span class="kv-item-tip"></span>
+                </div>
+                <div class="kv-item ue-clear">
+                    <label><span class="impInfo"></span>密码</label>
+                    <div class="kv-item-content">
+                        <input name="Password" type="password" placeholder="密码"/>
+                    </div>
+                    <span class="kv-item-tip">为空则保留原密码</span>
+                </div>
+            </div>
+
+            <div class="kv-item ue-clear">
+                <label><span class="impInfo"></span>角色</label>
+                <div class="kv-item-content">
+                    <input type="text" class="current_role_name" disabled/>
+                    <div class="kite_select">
+                        <input type="text" name="role_name" value="" placeholder="请输入角色名称关键字可以搜索"/>
+                        <button class="search_btn">搜索</button>
+                        <ul id="role_rows">
+
+                        </ul>
+                    </div>
+                </div>
+                <span class="kv-item-tip">不选择保留则原角色</span>
+            </div>
+
+            <input type="hidden" name="Id" value="{{ .id }}"/>
+
+            <div class="buttons">
+                <input class="button" type="button" value="确认修改"/>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script>
+    var id = "{{ .id }}"
+    $.post("{{ urlfor "AdminController.FindData" }}", {id: id}, function (ret) {
+        if (ret.Code == 200) {
+            $("input[name='Username']").val(ret.Data.Username)
+            $(".current_role_name").val(ret.Data.RoleName)
+        } else {
+            alert(ret.Msg)
+            window.location.href = "index.html?p=" + {{ .p }}
+        }
+    }, "json")
+    $(".button").on("click", function () {
+        var id = $("input[name='Id']").val()
+        var username = $("input[name='Username']").val().trim()
+        var password = $("input[name='Password']").val().trim()
+        var role = $("#role_rows").find("input[name='role']:checked").val()
+
+        if (username == "") {
+            alert("请输入用户名")
+            return false
+        }
+        // if (password == "") {
+        //     alert("请输入密码")
+        //     return false
+        // }
+        if (role == undefined || role == null) {
+            role = ""
+        }
+        $.post("{{ urlfor "AdminController.Edit" }}", {
+            id: id,
+            username: username,
+            password: password,
+            role: role
+        }, function (ret) {
+            if (ret.Code == 200) {
+                location.href = "index.html?p={{ .p }}"
+            } else {
+                alert(ret.Msg)
+            }
+        }, "json")
+    })
+
+    getRoleData("")
+    $(".search_btn").on("click", function () {
+        var role_name = $("input[name=role_name]").val().trim()
+        getRoleData(role_name)
+    })
+
+    function getRoleData(role_name) {
+        $.post("/cms/role/data", {view_rows: 20, p: 1, role_name: role_name}, function (ret) {
+            var html = ''
+            if (ret.Code == 200) {
+                var list = ret.Data.list
+                for (var i = 0; i < list.length; i++) {
+                    html += '<li><input name="role" id="r_' + i + '" type="radio" value="' + list[i].Id + '"/><label for="r_' + i + '">' + list[i].Name + '</label></li>'
+                }
+            }
+            $("#role_rows").html(html)
+        }, "json")
+    }
+</script>

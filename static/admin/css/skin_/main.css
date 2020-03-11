@@ -10,7 +10,7 @@ html{*overflow:auto;}
 /*用户登录信息*/
 .hd-top .user-info{ float:left; margin-left:33px; /*width:110px;*/ height:49px; line-height:49px;}
 .hd-top .user-info .user-avatar{ position:relative; float:left; margin-top:6px; width:40px; height:40px; background:url(../../img/skin_/userfacebg.png); }
-.hd-top .user-info .user-avatar span{ position:absolute; top:2px; left:2px; width:34px; height:34px; background:url(../../img/skin_/userface.png);}
+.hd-top .user-info .user-avatar span{ position:absolute; top:2px; left:2px; width:34px; height:34px; /*background:url(../../img/skin_/userface.png)*/;}
 .hd-top .user-info .user-avatar span .info-num{ position:absolute; top:-4px; right:-4px; width:16px; height:16px; line-height:16px; text-align:center; background:url(../../img/skin_/msg.png); color:#fff; font-style:normal;}
 .hd-top .user-info .user-name{ float:left; margin-left:6px; color:#fff;}
 .hd-top .user-info .more-info{ float:left; margin:19px 0 0 10px;width:16px;height:15px; background:url(../../img/skin_/userxl.png) center center no-repeat;}
@@ -25,7 +25,7 @@ html{*overflow:auto;}
 .hd-top .setting .setting-skin i.arrow-icon{right:12px;top:12px;width:7px; height:4px; background:url(../../img/skin_/skinxl.png);}
 .hd-top .setting .setting-skin:hover i.arrow-icon{background-position:-7px 0;}
 .hd-top .setting .setting-skin .switch-bar{width:82px;height:29px; background:url(../../img/skin_/skin-bg.png);}
-.hd-top .setting .setting-main{ float:left; width:152px;}
+.hd-top .setting .setting-main{ float:left; /*width:152px;*/}
 .hd-top .setting .setting-main li{ float:left; width:38px;text-align:center; }
 .hd-top .setting .setting-main li a{color:#fff;}
 .hd-top .setting .setting-main li a:hover{text-decoration:none;color:#000;}

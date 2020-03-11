@@ -1,0 +1,35 @@
+</body>
+<script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/global.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.select.js"></script>
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.pagination.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.grid.js"></script>
+<script type="text/javascript" src="/static/admin/js/WdatePicker.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/static/layui/lay/modules/layer.js"></script>
+<script type="text/javascript" src="/static/layui/layui.js"></script>
+<script>
+    //表格背景切换颜色
+    $(document).on("mouseover",".__data tr,.__bodyfinal tr,.__bodyfront tr",function () {
+        var colorOther = "#FFFFFF"
+        var colorActive = "#FEFFB4"
+        var i = $(this).index()
+        $(".__data tr").find("td").css({"background": colorOther})
+        $(".__data tr").eq(i).find("td").css({"background": colorActive})
+
+        $(".__bodyfinal tr").find("td").css({"background": colorOther})
+        $(".__bodyfinal tr").eq(i).find("td").css({"background": colorActive})
+
+        $(".__bodyfront tr").find("td").css({"background": colorOther})
+        $(".__bodyfront tr").eq(i).find("td").css({"background": colorActive})
+    })
+    $(document).on("mouseleave",".__data tr,.__bodyfinal tr,.__bodyfront tr",function () {
+        var colorActive = "#FFFFFF"
+        var i = $(this).index()
+        $(".__data tr").eq(i).find("td").css({"background": colorActive})
+        $(".__bodyfinal tr").eq(i).find("td").css({"background": colorActive})
+        $(".__bodyfront tr").eq(i).find("td").css({"background": colorActive})
+    })
+</script>
+</html>

@@ -1,0 +1,108 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd">
+    </div>
+    <div id="bd">
+        <div id="main">
+            <form id="form" action="/cms/home/my_info" method="post" enctype="multipart/form-data">
+                <div class="subfild-content base-info">
+                    <div class="kv-item ue-clear">
+                        <label><span class="impInfo"></span>系统账号</label>
+                        <div class="kv-item-content">
+                            <label><span>{{.info.Username}}</span></label>
+                        </div>
+                        <span class="kv-item-tip">系统账号不可更改</span>
+                    </div>
+                    <div class="kv-item ue-clear">
+                        <label><span class="impInfo"></span>系统角色</label>
+                        <div class="kv-item-content">
+                            <label><span>{{.info.RoleName}}</span></label>
+                        </div>
+                        <span class="kv-item-tip">系统角色不可更改</span>
+                    </div>
+                    <div class="kv-item ue-clear">
+                        <label><span class="impInfo"></span>登陆密码</label>
+                        <div class="kv-item-content">
+                            <input name="Password" type="password" placeholder="密码" autocomplete="off"/>
+                        </div>
+                        <span class="kv-item-tip">可以修改登陆密码,为空保存原来密码</span>
+                    </div>
+                    <div class="kv-item ue-clear">
+                        <label><span class="impInfo"></span>头像</label>
+                        <div class="kv-item-content">
+                            <div class="layui-upload">
+                                <button type="button" class="layui-btn" id="upload_button">上传图片</button>
+                                <div class="layui-upload-list">
+                                    <img width="97" class="layui-upload-img" id="show_img" src="{{.info.HeadPic}}">
+                                    <p id="demoText"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <input name="HeadPic" type="hidden" value="">
+                        <span class="kv-item-tip">可以修改头像</span>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <input class="button" type="button" value="确认添加"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script>
+    layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upload_button'
+            , url: '/cms/api/up_images' //改成您自己的上传接口
+            , before: function (obj) {
+                //预读本地文件示例，不支持ie8
+                obj.preview(function (index, file, result) {
+                    $('#show_img').attr('src', result); //图片链接（base64）
+                });
+            }
+            , done: function (res) {
+                //如果上传失败
+                if (res.Code > 200) {
+                    $('#show_img').attr('src', '')
+                    return layer.msg(res.Msg);
+                }
+                //上传成功
+                $("input[name='HeadPic']").val(res.Data)
+            }
+            , error: function () {
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function () {
+                    uploadInst.upload();
+                });
+            }
+        });
+    })
+
+        $(".button").on("click", function () {
+            var Password = $("input[name='Password']").val().trim()
+            var HeadPic = $("input[name='HeadPic']").val().trim()
+            if(Password == "" &&  HeadPic == ""){
+                layer.msg("没有修改到任何信息");
+                return false
+            }
+            $("form").ajaxSubmit(function (ret) {
+                if (ret.Code == 200) {
+                    $("#user-head-pic",parent.document).attr("src",ret.Data.HeadPic)
+                    layer.alert(ret.Msg, {}, function () {
+                        // parent.history.go(0)
+                        var index=parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                    })
+                } else {
+                    layer.alert(ret.Msg);
+                }
+            })
+            return false
+        })
+</script>

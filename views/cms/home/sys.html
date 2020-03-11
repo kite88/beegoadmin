@@ -1,0 +1,59 @@
+{{template "cms/header.html" .}}
+<div id="container">
+    <div id="hd"></div>
+    <div id="bd">
+        <div id="main">
+
+            <div class="table">
+
+                <div class="grid"></div>
+
+                <div class="pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{{template "cms/footer.html" .}}
+<script type="text/javascript">
+    var head = [{
+        label: '序号',
+        width: 50,
+        name: 'id'
+    }, {
+        label: '名称',
+        width: 200,
+    }, {
+        label: '信息',
+        width: 350,
+    }];
+
+    var tbody = []
+
+    $.post("{{ urlfor "HomeController.Sys"}}", {}, function (resultData) {
+        if (resultData.Code == 200) {
+            var data = resultData.Data
+            for (var i = 0; i < data.length; i++) {
+                tbody.push([i+1,data[i].Name,data[i].Value])
+            }
+            $('.grid').Grid('setData', tbody, head);
+        }
+    }, "json")
+
+    $('.grid').Grid({
+        thead: head,
+        tbody: null,
+        height: 520,
+        // checkbox: {
+        //     single: true
+        // },
+        // operator: {
+        //     type: "normal",
+        //     width: 150
+        // },
+        sortCallBack: function (name, index, type) {
+            alert(name + "," + index + ',' + type);
+        }
+    });
+    $('.grid').Grid('addLoading');
+
+</script>
